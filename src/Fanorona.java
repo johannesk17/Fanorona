@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ * Author: Kainz, Kaltenbäck, Katalinic
+ */
 public  class Fanorona
 {
     private static FieldPosition[][] boardArray = new FieldPosition[5][9];
