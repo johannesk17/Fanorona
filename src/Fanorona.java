@@ -12,8 +12,8 @@ public  class Fanorona
     public static void main(String[] args)
     {
         System.out.println("Start");
-
         InitializeField();
+        DrawField();
         CheckForPossibleMoves(1);
 
         for (Move m: possibleMoves)
@@ -33,6 +33,58 @@ public  class Fanorona
             }
             System.out.println();
         }
+    }
+
+    /**
+     * Draws state of field
+     * o -> white stone
+     * # -> black stone
+     * whitespace -> no stone on position
+     */
+    private static void DrawField() {
+
+        char white = 'o';
+        char black = '#';
+        int i = 0; //counts how many rows are printed
+        for(FieldPosition[] f : boardArray){
+            i ++;
+            for(FieldPosition s: f){
+                if(s.getStone()==1){
+                    System.out.print(white);
+                }
+                else if(s.getStone()==2){
+                    System.out.print(black);
+                }
+                else{
+                    System.out.print(" ");
+                }
+                if(s.isRight()) System.out.print("-");
+            }
+            System.out.println();
+            if(i % 2 !=0 && i<5)  System.out.println("|\\|/|\\|/|\\|/|\\|/|");
+            else if(i % 2 == 0 && i < 5){
+                System.out.println("|/|\\|/|\\|/|\\|/|\\|");
+            }
+        }
+        System.out.println();
+
+    }
+
+    /**
+     * @param board -> maybe AI checks future state of board
+     * @return int [] array with number of white stones in index 0
+     * and number of black stones in index 1
+     */
+    private static int[] CheckState(FieldPosition[][] board){
+        int [] numberOfStones = new int [2];
+        for(FieldPosition[] f : board){
+
+            for(FieldPosition s: f){
+                if(s.getStone()==1)numberOfStones[0]++;
+                if(s.getStone()==2)numberOfStones[1]++;
+            }
+        }
+        return numberOfStones;
     }
 
     private static  void CheckForPossibleMoves(int state) //state: which team; 1 = white, 2 = black
