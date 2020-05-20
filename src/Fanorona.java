@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -8,6 +11,8 @@ public  class Fanorona
     private static FieldPosition[][] boardArray = new FieldPosition[5][9];
 
     private static ArrayList<Move> possibleMoves = new ArrayList<>();
+
+    private static int[] userInput = new int[5];
 
     public static void main(String[] args)
     {
@@ -33,6 +38,138 @@ public  class Fanorona
             }
             System.out.println();
         }
+    }
+
+
+    private static boolean GetUserInput()
+    {
+        int oldRow;
+        int oldColumn;
+        int newRow;
+        int newColumn;
+        int moveType;
+        int rowChange;
+        int columnChange;
+        int direction = 0;
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        try
+        {
+            System.out.println("Row of the stone you want to move:");
+            oldRow = Integer.parseInt(reader.readLine());
+            System.out.println("Column of the stone you want to move:");
+            oldColumn = Integer.parseInt(reader.readLine());
+            System.out.println("Row you want to move the stone to:");
+            newRow = Integer.parseInt(reader.readLine());
+            System.out.println("Column you want to move the stone to:");
+            newColumn = Integer.parseInt(reader.readLine());
+            System.out.println("Type of your move (0: Forward Attack, 1: Reverse Attack, 2: Move without an attack");
+            moveType = Integer.parseInt(reader.readLine());
+        }
+        catch(NumberFormatException | IOException e)
+        {
+            System.out.println("Wrong input, please only type in numbers");
+            return false;
+        }
+
+        rowChange = newRow - oldRow;
+        columnChange = newColumn - oldColumn;
+
+        if(rowChange == -1 && columnChange == 0) direction=1;
+        else if(rowChange == -1 && columnChange == 1) direction=2;
+        else if(rowChange == 0 && columnChange == 1) direction=3;
+        else if(rowChange == 1 && columnChange == 1) direction=4;
+        else if(rowChange == 1 && columnChange == 0) direction=5;
+        else if(rowChange == 1 && columnChange == -1) direction=6;
+        else if(rowChange == 0 && columnChange == -1) direction=7;
+        else if(rowChange == -1 && columnChange == -1) direction=8;
+
+        Move userMove = new Move(oldRow,oldColumn,direction);
+
+       if(possibleMoves.contains(userMove))
+       {
+           userInput[0] = oldRow;
+           userInput[1] = oldColumn;
+           userInput[2] = newRow;
+           userInput[3] = newColumn;
+           userInput[4] = moveType;
+           return true;
+       }
+
+       System.out.println("The chosen move is not possible.");
+       return false;
+
+
+    }
+    private static void ChangeStateNotes(int[] currentUserInput)
+    {
+        /*currentUserInput[0] --> row of old position
+         currentUserInput[1] --> column of old position
+         currentUserInput[2] --> row of new position
+         currentUserInput[3] --> column of new position
+         currentUserInput[4] --> move type --> 0: Attack, 1: Reverse, 2: simple move without action
+         */
+
+        int rowChange = currentUserInput[2] - currentUserInput[0];
+        int columnChange = currentUserInput[3] - currentUserInput[1];
+        int currentPlayer = boardArray[currentUserInput[0]][currentUserInput[1]].getStone();
+        boolean changeFinished = false;
+        int stoneCounter = 1;
+        int stoneToCheckRow;
+        int stoneToCheckColumn;
+
+
+        if(currentUserInput[4] == 0) //Attack
+        {
+            try {
+                do {
+                    stoneToCheckRow = currentUserInput[2] + (rowChange * stoneCounter);
+                    stoneToCheckColumn = currentUserInput[3] + (columnChange * stoneCounter);
+
+                    if (boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != currentPlayer && boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != 0) {
+                        boardArray[stoneToCheckRow][stoneToCheckColumn].setStone(0);
+                        stoneCounter++;
+                    } else {
+                        changeFinished = true;
+                    }
+
+
+                } while (!changeFinished);
+            }
+            catch (IndexOutOfBoundsException e)
+            {
+                return;
+            }
+        }
+
+        else if(currentUserInput[4] == 1) //Reverse
+        {
+            stoneCounter++;
+            try {
+
+                do {
+                    stoneToCheckRow = currentUserInput[2] - (rowChange * stoneCounter);
+                    stoneToCheckColumn = currentUserInput[3] - (columnChange * stoneCounter);
+
+                    if (boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != currentPlayer && boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != 0) {
+                        boardArray[stoneToCheckRow][stoneToCheckColumn].setStone(0);
+                        stoneCounter++;
+                    } else {
+                        changeFinished = true;
+                    }
+
+
+                } while (!changeFinished);
+            }
+            catch (IndexOutOfBoundsException e)
+            {
+                return;
+            }
+        }
+
+        boardArray[currentUserInput[2]][currentUserInput[3]].setStone(boardArray[currentUserInput[0]][currentUserInput[1]].getStone());
+        boardArray[currentUserInput[0]][currentUserInput[1]].setStone(0);
     }
 
     /**
