@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Attack {
     int row;
     int column;
@@ -52,5 +54,18 @@ public class Attack {
         {
             this.moveType = moveType;
         }
+    }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Attack attack = (Attack) o;
+        return row == attack.row &&
+                column == attack.column &&
+                direction == attack.direction&&
+                moveType == attack.moveType;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, column, direction, moveType);
     }
 }

@@ -13,41 +13,37 @@ public  class Fanorona
     private static ArrayList<Move> possibleMoves = new ArrayList<>();
     private static ArrayList<Attack> possibleAttack = new ArrayList<>();
 
-    private static int[] userInput = new int[5];
+    private static int[] userInput = new int[6];
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         System.out.println("Start");
+
+        // Select loop pvp / pv AI / AIv AI
+        //loop while !victoryCondition(1 spieler hat keine steine mehr) unentschieden wenn(maximale zugdauer ereicht oder X züge ohne angriff oder beide spieler haben nur noch einen stein mit abstand  )
+
+
         InitializeField();
         DrawField();
         CheckForPossibleMoves(1);   //state is optained from the user input / white or black is initiating the turn
         CheckForPossibleAttacks(1);
-
-
-        for (Move m: possibleMoves)
-        {
+        /**
+        for (Move m : possibleMoves) {
             System.out.println("Possible Move");
-            System.out.println("Row: "+m.row);
+            System.out.println("Row: " + m.row);
             System.out.println("Column: " + m.column);
             System.out.println("Direction: " + m.direction);
             System.out.println("");
         }
 
-        for(int row=0;row<5;row++)
-        {
-            for (int column = 0; column < 9; column++)
-            {
+        for (int row = 0; row < 5; row++) {
+            for (int column = 0; column < 9; column++) {
                 System.out.print(boardArray[row][column].getStone());
             }
             System.out.println();
-        }
+        }*/
 
 
-        if(CheckIfInList(3,2,3)){       //give user input
-            System.out.println("Valid input");
-        }else System.out.println("Invalid input");
     }
-
 
     private static boolean GetUserInput()
     {
@@ -94,14 +90,31 @@ public  class Fanorona
         else if(rowChange == -1 && columnChange == -1) direction=8;
 
         Move userMove = new Move(oldRow,oldColumn,direction);
+        Attack userAttack = new Attack(oldRow,oldColumn,direction,moveType);
 
-       if(possibleMoves.contains(userMove))
+
+       // if(CheckIfInList(2,3,3)){       //give user input
+          //  System.out.println("Valid input");
+      //  }else System.out.println("Invalid input");
+
+        if(!possibleAttack.isEmpty() && possibleAttack.contains(userAttack)){
+            userInput[0] = oldRow;
+            userInput[1] = oldColumn;
+            userInput[2] = newRow;
+            userInput[3] = newColumn;
+            userInput[4] = moveType;
+            userInput[5] = direction;
+            System.out.println("The chosen move is possible.");
+            return true;
+        }else if(possibleAttack.isEmpty() && possibleMoves.contains(userMove))
        {
            userInput[0] = oldRow;
            userInput[1] = oldColumn;
            userInput[2] = newRow;
            userInput[3] = newColumn;
            userInput[4] = moveType;
+           userInput[5] = direction;
+           System.out.println("The chosen move is possible.");
            return true;
        }
 
@@ -147,7 +160,7 @@ public  class Fanorona
             }
             catch (IndexOutOfBoundsException e)
             {
-                return;
+
             }
         }
 
@@ -169,13 +182,14 @@ public  class Fanorona
 
 
                 } while (!changeFinished);
+
+
             }
             catch (IndexOutOfBoundsException e)
             {
-                return;
+
             }
         }
-
         boardArray[currentUserInput[2]][currentUserInput[3]].setStone(boardArray[currentUserInput[0]][currentUserInput[1]].getStone());
         boardArray[currentUserInput[0]][currentUserInput[1]].setStone(0);
     }
@@ -279,6 +293,7 @@ public  class Fanorona
     }
     private static  void CheckForPossibleAttacks(int state) //state: which team; 1 = white, 2 = black
     {
+            possibleAttack.clear();
             for (Move m: possibleMoves)
             {
                 //isUp
@@ -289,7 +304,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==1 && boardArray[m.row-1][m.column].getStone()==0){
+                } if(m.direction==1 && boardArray[m.row-1][m.column].getStone()==0){
 
                     if(boardArray[m.row+1][m.column].getStone()!=0 && boardArray[m.row+1][m.column].getStone()!=state){
 
@@ -305,7 +320,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==2 && boardArray[m.row-1][m.column+1].getStone()==0){
+                } if(m.direction==2 && boardArray[m.row-1][m.column+1].getStone()==0){
 
                     if(boardArray[m.row+1][m.column-1].getStone()!=0 && boardArray[m.row+1][m.column-1].getStone()!=state){
 
@@ -321,7 +336,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==3 && boardArray[m.row][m.column+1].getStone()==0){
+                } if(m.direction==3 && boardArray[m.row][m.column+1].getStone()==0){
 
                     if(boardArray[m.row][m.column-1].getStone()!=0 && boardArray[m.row][m.column-1].getStone()!=state){
 
@@ -337,7 +352,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==4 && boardArray[m.row+1][m.column+1].getStone()==0){
+                } if(m.direction==4 && boardArray[m.row+1][m.column+1].getStone()==0){
 
                     if(boardArray[m.row-1][m.column-1].getStone()!=0 && boardArray[m.row-1][m.column-1].getStone()!=state){
 
@@ -353,7 +368,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==5 && boardArray[m.row+1][m.column].getStone()==0){
+                } if(m.direction==5 && boardArray[m.row+1][m.column].getStone()==0){
 
                     if(boardArray[m.row-1][m.column].getStone()!=0 && boardArray[m.row-1][m.column].getStone()!=state){
 
@@ -369,7 +384,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==6 && boardArray[m.row+1][m.column-1].getStone()==0){
+                } if(m.direction==6 && boardArray[m.row+1][m.column-1].getStone()==0){
 
                     if(boardArray[m.row-1][m.column+1].getStone()!=0 && boardArray[m.row-1][m.column+1].getStone()!=state){
 
@@ -385,7 +400,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==7 && boardArray[m.row][m.column-1].getStone()==0){
+                } if(m.direction==7 && boardArray[m.row][m.column-1].getStone()==0){
 
                     if(boardArray[m.row][m.column+1].getStone()!=0 && boardArray[m.row][m.column+1].getStone()!=state){
 
@@ -401,7 +416,7 @@ public  class Fanorona
                         possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
 
                     }
-                }else if(m.direction==8 && boardArray[m.row-1][m.column-1].getStone()==0){
+                } if(m.direction==8 && boardArray[m.row-1][m.column-1].getStone()==0){
 
                     if(boardArray[m.row+1][m.column+1].getStone()!=0 && boardArray[m.row+1][m.column+1].getStone()!=state){
 
@@ -412,25 +427,6 @@ public  class Fanorona
             }
         }
 
-    private static  boolean CheckIfInList(int row, int column, int direction )
-    {
-        if(!possibleAttack.isEmpty()){
-            for (Attack a: possibleAttack)
-            {
-                if (row == a.row && column == a.column && direction == a.direction) {
-                    return true;
-                }
-            }
-        } else{
-            for (Move m: possibleMoves)
-            {
-                if (row == m.row && column == m.column && direction == m.direction) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
 
 
