@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Move
 {
     int row;
@@ -41,5 +43,20 @@ public class Move
         {
             this.direction = direction;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return row == move.row &&
+                column == move.column &&
+                direction == move.direction;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, column, direction);
     }
 }
