@@ -1,3 +1,5 @@
+import org.w3c.dom.ls.LSOutput;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,30 +20,13 @@ public  class Fanorona
     public static void main(String[] args) {
         System.out.println("Start");
         Start();
-        // Select loop pvp / pv AI / AIv AI
-        //loop while !victoryCondition(1 spieler hat keine steine mehr) unentschieden wenn(maximale zugdauer ereicht oder X züge ohne angriff oder beide spieler haben nur noch einen stein mit abstand  )
-
-
-
-        /**
-        for (Move m : possibleMoves) {
-            System.out.println("Possible Move");
-            System.out.println("Row: " + m.row);
-            System.out.println("Column: " + m.column);
-            System.out.println("Direction: " + m.direction);
-            System.out.println("");
-        }
-
-        for (int row = 0; row < 5; row++) {
-            for (int column = 0; column < 9; column++) {
-                System.out.print(boardArray[row][column].getStone());
-            }
-            System.out.println();
-        }*/
-
-
     }
 
+    /**
+     * Start print welcome screen and start choices
+     * -> user can input 1 for pvp 2 for player vs AI and 3 for AI vs AI
+     * -> depending on userInput different methods are called
+     */
     private static void Start(){
         System.out.println("Pick mode: \n[1]Player versus Player \n[2] Player versus AI \n[3] Ai versus AI");
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -67,27 +52,58 @@ public  class Fanorona
         }
     }
 
+    /**
+     * PvpMode main loop for player vs. player game
+     * calls InitializeField to setup board
+     * while boardState does not return 0 for one of the player
+     * -> or draw condition is triggered the game continues
+     * counter indicating who's turn it is updates when no attack is possible or stone was only moved
+     * method calls DrawField, CheckForPossibleMoves and CheckForPossibleAttacks to draw board and fill lists
+     * if the last turn was an attack the method calls TrimToNodeActions trimming the possibleAttacks list
+     * -> setting attacked to false and checking if no attacks are possible
+     * -> counter is updated and loop start anew if no attacks are possible
+     * if possibleAttacks list is not empty userInput occurs
+     * -> depending on input board is updated
+     */
     private static void PvpMode(){
         System.out.println("PVP");
         InitializeField();
         int [] boardState = CheckState(boardArray);
+        boolean attacked = false;
         int counter = 1;
-        while(boardState[0]!=0 || boardState[1] !=0){
+        while(boardState[0]!=0 && boardState[1]!=0){
             DrawField();
             CheckForPossibleMoves(counter);
             CheckForPossibleAttacks(counter);
+            if((boardState[0] + boardState[1]) == 2 && possibleAttack.isEmpty()){
+                break; //draw
+            }
+            if(attacked){
+                TrimToNodeActions();
+                attacked = false;
+                if(possibleAttack.isEmpty()){
+                    counter = (counter==1) ? 2:1;
+                    continue;
+                }
+            }
+            if(counter==1) System.out.println("Turn of white (o) player!");
+            if(counter==2) System.out.println("Turn of black (#) player!");
+
             if(GetUserInput()){
                 ChangeStateNotes(userInput);
                 boardState = CheckState(boardArray);
-                if(counter==1)counter++;
+                if(userInput[4]!=2) attacked = true;
                 else{
-                    counter=1;
+                    attacked = false;
+                    counter = (counter==1) ? 2:1;
                 }
             }
         }
         if(boardState[0]==0) System.out.println("BLACK WON!");
-        if(boardState[1]==0) System.out.println("WHITE WON!");
-
+        else if(boardState[1]==0) System.out.println("WHITE WON!");
+        else{
+            System.out.println("DRAW!");
+        }
 
     }
 
@@ -99,6 +115,28 @@ public  class Fanorona
         System.out.println("AIvAI");
     }
 
+    /**
+     * TrimToNodeActions trims possibleAttack list to userInput node actions
+     * all attack nodes are cleared except the last user input node destination
+     * this method gets called before a new user input if an attack was launched last turn
+     */
+    private static void TrimToNodeActions(){
+
+       for(int i=0 ; i<possibleAttack.size();i++){
+            Attack att = possibleAttack.get(i);
+            if(att.column != userInput[3] || att.row != userInput[2])
+            {
+                possibleAttack.remove(i);
+                i--;
+            }
+            else {
+                if(Math.abs(att.direction-userInput[5])==4){
+                    possibleAttack.remove(i);
+                    i--;
+                }
+            }
+        }
+    }
     private static boolean GetUserInput()
     {
         int oldRow;
@@ -259,7 +297,9 @@ public  class Fanorona
         char white = 'o';
         char black = '#';
         int i = 0; //counts how many rows are printed
+        System.out.println("  0 1 2 3 4 5 6 7 8");
         for(FieldPosition[] f : boardArray){
+            System.out.print(i+" ");
             i ++;
             for(FieldPosition s: f){
                 if(s.getStone()==1){
@@ -273,12 +313,14 @@ public  class Fanorona
                 }
                 if(s.isRight()) System.out.print("-");
             }
+            System.out.print(" "+i);
             System.out.println();
-            if(i % 2 !=0 && i<5)  System.out.println("|\\|/|\\|/|\\|/|\\|/|");
+            if(i % 2 !=0 && i<5)  System.out.println("  |\\|/|\\|/|\\|/|\\|/|");
             else if(i % 2 == 0 && i < 5){
-                System.out.println("|/|\\|/|\\|/|\\|/|\\|");
+                System.out.println("  |/|\\|/|\\|/|\\|/|\\|");
             }
         }
+        System.out.println("  0 1 2 3 4 5 6 7 8");
         System.out.println();
 
     }
