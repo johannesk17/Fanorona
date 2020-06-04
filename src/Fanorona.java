@@ -72,7 +72,7 @@ public  class Fanorona
         boolean attacked = false;
         int counter = 1;
         while(boardState[0]!=0 && boardState[1]!=0){
-            DrawField();
+
             CheckForPossibleMoves(counter);
             CheckForPossibleAttacks(counter);
             if((boardState[0] + boardState[1]) == 2 && possibleAttack.isEmpty()){
@@ -86,6 +86,7 @@ public  class Fanorona
                     continue;
                 }
             }
+            DrawField();
             if(counter==1) System.out.println("Turn of white (o) player!");
             if(counter==2) System.out.println("Turn of black (#) player!");
 
@@ -300,7 +301,6 @@ public  class Fanorona
         System.out.println("  0 1 2 3 4 5 6 7 8");
         for(FieldPosition[] f : boardArray){
             System.out.print(i+" ");
-            i ++;
             for(FieldPosition s: f){
                 if(s.getStone()==1){
                     System.out.print(white);
@@ -315,6 +315,7 @@ public  class Fanorona
             }
             System.out.print(" "+i);
             System.out.println();
+            i ++;
             if(i % 2 !=0 && i<5)  System.out.println("  |\\|/|\\|/|\\|/|\\|/|");
             else if(i % 2 == 0 && i < 5){
                 System.out.println("  |/|\\|/|\\|/|\\|/|\\|");
