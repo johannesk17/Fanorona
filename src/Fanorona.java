@@ -350,132 +350,165 @@ public  class Fanorona
             possibleAttack.clear();
             for (Move m: possibleMoves)
             {
+
                 //isUp
-                if ( m.direction==1 && boardArray[m.row-1][m.column].isUp()) {
+                if(m.row >=2){
+                    if ( m.direction==1 && boardArray[m.row-1][m.column].isUp()) {
 
-                    if (boardArray[m.row - 2][m.column].getStone() != state && boardArray[m.row - 2][m.column].getStone() != 0) {
+                        if (boardArray[m.row - 2][m.column].getStone() != state && boardArray[m.row - 2][m.column].getStone() != 0) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
-                    }
-                } if(m.direction==1 && boardArray[m.row-1][m.column].getStone()==0){
-
-                    if(boardArray[m.row+1][m.column].getStone()!=0 && boardArray[m.row+1][m.column].getStone()!=state){
-
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
                     }
                 }
+                if(m.row >=1 && m.row <=3 ) {
+                    if (m.direction == 1 && boardArray[m.row - 1][m.column].getStone() == 0) {
+
+                        if (boardArray[m.row + 1][m.column].getStone() != 0 && boardArray[m.row + 1][m.column].getStone() != state) {
+
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
+                        }
+                    }
+                }
+
                 //isUpRight
-                if ( m.direction==2 && boardArray[m.row-1][m.column+1].isUpRight()) {
+                if(m.row >=2 && m.column <=6){
+                    if ( m.direction==2 && boardArray[m.row-1][m.column+1].isUpRight()) {
 
-                    if (boardArray[m.row - 2][m.column+2].getStone() != state && boardArray[m.row - 2][m.column+2].getStone() != 0) {
+                        if (boardArray[m.row - 2][m.column+2].getStone() != state && boardArray[m.row - 2][m.column+2].getStone() != 0) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
-                    }
-                } if(m.direction==2 && boardArray[m.row-1][m.column+1].getStone()==0){
-
-                    if(boardArray[m.row+1][m.column-1].getStone()!=0 && boardArray[m.row+1][m.column-1].getStone()!=state){
-
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
                     }
                 }
+                if(m.row >=1 && m.row <=3 && m.column<=7 && m.column>=1) {
+                    if(m.direction==2 && boardArray[m.row-1][m.column+1].getStone()==0){
+
+                        if(boardArray[m.row+1][m.column-1].getStone()!=0 && boardArray[m.row+1][m.column-1].getStone()!=state){
+
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        }
+                    }
+                }
+
                 //isRight
-                if ( m.direction==3 && boardArray[m.row][m.column+1].isRight()) {
+                if(m.column <= 6){
+                    if ( m.direction==3 && boardArray[m.row][m.column+1].isRight()) {
 
-                    if (boardArray[m.row][m.column+2].getStone() != state && boardArray[m.row][m.column+2].getStone() != 0) {
+                        if (boardArray[m.row][m.column+2].getStone() != state && boardArray[m.row][m.column+2].getStone() != 0) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
-                    }
-                } if(m.direction==3 && boardArray[m.row][m.column+1].getStone()==0){
-
-                    if(boardArray[m.row][m.column-1].getStone()!=0 && boardArray[m.row][m.column-1].getStone()!=state){
-
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
                     }
                 }
+                if(m.column<=7 && m.column>=1){
+                    if(m.direction==3 && boardArray[m.row][m.column+1].getStone()==0){
+
+                        if(boardArray[m.row][m.column-1].getStone()!=0 && boardArray[m.row][m.column-1].getStone()!=state){
+
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        }
+                    }
+                }
+
                 //isDownRight
-                if ( m.direction==4 && boardArray[m.row+1][m.column+1].isDownRight()) {
+                if(m.row <=2 && m.column <=6){
+                    if ( m.direction==4 && boardArray[m.row+1][m.column+1].isDownRight()) {
 
-                    if (boardArray[m.row+2][m.column+2].getStone() != state && boardArray[m.row+2][m.column+2].getStone() != 0) {
+                        if (boardArray[m.row+2][m.column+2].getStone() != state && boardArray[m.row+2][m.column+2].getStone() != 0) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
-                    }
-                } if(m.direction==4 && boardArray[m.row+1][m.column+1].getStone()==0){
-
-                    if(boardArray[m.row-1][m.column-1].getStone()!=0 && boardArray[m.row-1][m.column-1].getStone()!=state){
-
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
                     }
                 }
+                if(m.row <=3 && m.row >=1 && m.column<=7 && m.column>=1) {
+                    if(m.direction==4 && boardArray[m.row+1][m.column+1].getStone()==0){
+
+                        if(boardArray[m.row-1][m.column-1].getStone()!=0 && boardArray[m.row-1][m.column-1].getStone()!=state){
+
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        }
+                    }
+                }
+
                 //isDown
-                if ( m.direction==5 && boardArray[m.row+1][m.column].isDown()) {
+                if(m.row <=2){
+                    if ( m.direction==5 && boardArray[m.row+1][m.column].isDown()) {
 
-                    if (boardArray[m.row +2][m.column].getStone() != state && boardArray[m.row + 2][m.column].getStone() != 0) {
+                        if (boardArray[m.row +2][m.column].getStone() != state && boardArray[m.row + 2][m.column].getStone() != 0) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
-                    }
-                } if(m.direction==5 && boardArray[m.row+1][m.column].getStone()==0){
-
-                    if(boardArray[m.row-1][m.column].getStone()!=0 && boardArray[m.row-1][m.column].getStone()!=state){
-
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
                     }
                 }
+                if(m.row <=3 && m.row >=1 ) {
+                    if(m.direction==5 && boardArray[m.row+1][m.column].getStone()==0){
+
+                        if(boardArray[m.row-1][m.column].getStone()!=0 && boardArray[m.row-1][m.column].getStone()!=state){
+
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        }
+                    }
+                }
+
                 //isDownLeft
-                if ( m.direction==6 && boardArray[m.row+1][m.column-1].isDownLeft()) {
+                if(m.row <=2 && m.column>=2){
+                    if ( m.direction==6 && boardArray[m.row+1][m.column-1].isDownLeft()) {
 
-                    if (boardArray[m.row +2][m.column-2].getStone() != state && boardArray[m.row + 2][m.column-2].getStone() != 0) {
+                        if (boardArray[m.row +2][m.column-2].getStone() != state && boardArray[m.row + 2][m.column-2].getStone() != 0) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
-                    }
-                } if(m.direction==6 && boardArray[m.row+1][m.column-1].getStone()==0){
-
-                    if(boardArray[m.row-1][m.column+1].getStone()!=0 && boardArray[m.row-1][m.column+1].getStone()!=state){
-
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
                     }
                 }
+
+                if(m.row <=3 && m.row >=1 && m.column >=1 && m.column<=7) {
+                    if(m.direction==6 && boardArray[m.row+1][m.column-1].getStone()==0){
+
+                        if(boardArray[m.row-1][m.column+1].getStone()!=0 && boardArray[m.row-1][m.column+1].getStone()!=state){
+
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        }
+                    }
+                }
+
                 //isLeft
-                if ( m.direction==7 && boardArray[m.row][m.column-1].isLeft()) {
+                if(m.column>=2){
+                    if ( m.direction==7 && boardArray[m.row][m.column-1].isLeft()) {
 
-                    if (boardArray[m.row][m.column-2].getStone() != state && boardArray[m.row][m.column-2].getStone() != 0) {
+                        if (boardArray[m.row][m.column-2].getStone() != state && boardArray[m.row][m.column-2].getStone() != 0) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
-                    }
-                } if(m.direction==7 && boardArray[m.row][m.column-1].getStone()==0){
-
-                    if(boardArray[m.row][m.column+1].getStone()!=0 && boardArray[m.row][m.column+1].getStone()!=state){
-
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
                     }
                 }
-                //isUpLeft
-                if ( m.direction==8 && boardArray[m.row-1][m.column-1].isUpLeft()) {
+                if( m.column>=1 && m.column<=7){
+                    if(m.direction==7 && boardArray[m.row][m.column-1].getStone()==0){
 
-                    if (boardArray[m.row - 2][m.column-2].getStone() != state && boardArray[m.row - 2][m.column-2].getStone() != 0) {
+                        if(boardArray[m.row][m.column+1].getStone()!=0 && boardArray[m.row][m.column+1].getStone()!=state){
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
-
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        }
                     }
-                } if(m.direction==8 && boardArray[m.row-1][m.column-1].getStone()==0){
+                }
 
-                    if(boardArray[m.row+1][m.column+1].getStone()!=0 && boardArray[m.row+1][m.column+1].getStone()!=state){
+                //isUpLeft
+                if(m.column>=2 && m.row>=2){
+                    if ( m.direction==8 && boardArray[m.row-1][m.column-1].isUpLeft()) {
 
-                        possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        if (boardArray[m.row - 2][m.column-2].getStone() != state && boardArray[m.row - 2][m.column-2].getStone() != 0) {
 
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
+                        }
+                    }
+                }
+                if(m.column>=1 && m.column<= 7 && m.row>=1 && m.row<=3){
+                    if(m.direction==8 && boardArray[m.row-1][m.column-1].getStone()==0){
+
+                        if(boardArray[m.row+1][m.column+1].getStone()!=0 && boardArray[m.row+1][m.column+1].getStone()!=state){
+
+                            possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
+                        }
                     }
                 }
             }
