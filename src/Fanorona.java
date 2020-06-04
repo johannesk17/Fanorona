@@ -17,15 +17,12 @@ public  class Fanorona
 
     public static void main(String[] args) {
         System.out.println("Start");
-
+        Start();
         // Select loop pvp / pv AI / AIv AI
         //loop while !victoryCondition(1 spieler hat keine steine mehr) unentschieden wenn(maximale zugdauer ereicht oder X züge ohne angriff oder beide spieler haben nur noch einen stein mit abstand  )
 
 
-        InitializeField();
-        DrawField();
-        CheckForPossibleMoves(1);   //state is optained from the user input / white or black is initiating the turn
-        CheckForPossibleAttacks(1);
+
         /**
         for (Move m : possibleMoves) {
             System.out.println("Possible Move");
@@ -43,6 +40,63 @@ public  class Fanorona
         }*/
 
 
+    }
+
+    private static void Start(){
+        System.out.println("Pick mode: \n[1]Player versus Player \n[2] Player versus AI \n[3] Ai versus AI");
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String user_selected_mode = in.readLine();
+            user_selected_mode.trim();
+            switch(user_selected_mode){
+                case "1":
+                    PvpMode();
+                    break;
+                case "2":
+                    PvAIMode();
+                    break;
+                case "3":
+                    AIvsAiMode();
+                    break;
+                default:
+                    System.out.println("Wrong input!");
+                    Start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void PvpMode(){
+        System.out.println("PVP");
+        InitializeField();
+        int [] boardState = CheckState(boardArray);
+        int counter = 1;
+        while(boardState[0]!=0 || boardState[1] !=0){
+            DrawField();
+            CheckForPossibleMoves(counter);
+            CheckForPossibleAttacks(counter);
+            if(GetUserInput()){
+                ChangeStateNotes(userInput);
+                boardState = CheckState(boardArray);
+                if(counter==1)counter++;
+                else{
+                    counter=1;
+                }
+            }
+        }
+        if(boardState[0]==0) System.out.println("BLACK WON!");
+        if(boardState[1]==0) System.out.println("WHITE WON!");
+
+
+    }
+
+    private static void PvAIMode(){
+        System.out.println("PvAI");
+    }
+
+    private static void  AIvsAiMode(){
+        System.out.println("AIvAI");
     }
 
     private static boolean GetUserInput()
@@ -200,7 +254,7 @@ public  class Fanorona
      * # -> black stone
      * whitespace -> no stone on position
      */
-    private static void DrawField() {
+    private static void DrawField(){
 
         char white = 'o';
         char black = '#';
