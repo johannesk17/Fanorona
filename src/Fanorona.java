@@ -481,10 +481,6 @@ public  class Fanorona
             }
         }
 
-
-
-
-
     private static void InitializeField()
     {
         for(int row=0;row<5;row++)
