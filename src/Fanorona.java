@@ -3,6 +3,7 @@ import org.w3c.dom.ls.LSOutput;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -68,16 +69,12 @@ public  class Fanorona
     private static void PvpMode(){
         System.out.println("PVP");
         InitializeField();
-        int [] boardState = CheckState(boardArray);
         boolean attacked = false;
         int counter = 1;
-        while(boardState[0]!=0 && boardState[1]!=0){
+        while(winCondition(boardArray)==3){
 
             CheckForPossibleMoves(counter);
             CheckForPossibleAttacks(counter);
-            if((boardState[0] + boardState[1]) == 2 && possibleAttack.isEmpty()){
-                break; //draw
-            }
             if(attacked){
                 TrimToNodeActions();
                 attacked = false;
@@ -92,7 +89,6 @@ public  class Fanorona
 
             if(GetUserInput()){
                 ChangeStateNotes(userInput);
-                boardState = CheckState(boardArray);
                 if(userInput[4]!=2) attacked = true;
                 else{
                     attacked = false;
@@ -100,12 +96,33 @@ public  class Fanorona
                 }
             }
         }
-        if(boardState[0]==0) System.out.println("BLACK WON!");
-        else if(boardState[1]==0) System.out.println("WHITE WON!");
+        if(winCondition(boardArray)==1) System.out.println("BLACK WON!");
+        else if(winCondition(boardArray)==0) System.out.println("WHITE WON!");
         else{
             System.out.println("DRAW!");
         }
 
+    }
+
+    /**
+     * winCondition checks boardState of parameter board  and returns result
+     * @param board
+     * @return int 1 if black won, 0 if white won, 2 if draw, 3 if game continues
+     */
+    private static int winCondition(FieldPosition[][] board){
+        int [] boardState = CheckState(board); // 0 is white  1 is black
+        if(boardState[0] == 0){
+            return 1;
+        }
+        else if (boardState[1] == 0){
+            return 0;
+        }
+        else if((boardState[0] + boardState[1]) == 2 && possibleAttack.isEmpty()){
+            return  2;
+        }
+        else{
+            return 3;
+        }
     }
 
     private static void PvAIMode(){
@@ -138,6 +155,7 @@ public  class Fanorona
             }
         }
     }
+
     private static boolean GetUserInput()
     {
         int oldRow;
