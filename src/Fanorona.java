@@ -73,8 +73,8 @@ public  class Fanorona
         int counter = 1;
         while(winCondition(boardArray)==3){
 
-            CheckForPossibleMoves(counter);
-            CheckForPossibleAttacks(counter);
+            CheckForPossibleMoves(counter,boardArray);
+            CheckForPossibleAttacks(counter,boardArray);
             if(attacked){
                 TrimToNodeActions();
                 attacked = false;
@@ -361,52 +361,52 @@ public  class Fanorona
         return numberOfStones;
     }
 
-    private static  void CheckForPossibleMoves(int state) //state: which team; 1 = white, 2 = black
+    private static  void CheckForPossibleMoves(int state,FieldPosition[][] board) //state: which team; 1 = white, 2 = black
     {
         possibleMoves.clear();
         for(int row=0;row<5;row++)
         {
             for (int column = 0; column < 9; column++)
             {
-                if(boardArray[row][column].getStone() == state)
+                if(board[row][column].getStone() == state)
                 {
 
-                    if (boardArray[row][column].isUp() && boardArray[row - 1][column].getStone() == 0) {
+                    if (board[row][column].isUp() && board[row - 1][column].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 1));
                     }
 
-                    if (boardArray[row][column].isUpRight() && boardArray[row - 1][column + 1].getStone() == 0) {
+                    if (board[row][column].isUpRight() && board[row - 1][column + 1].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 2));
                     }
 
-                    if (boardArray[row][column].isRight() && boardArray[row][column + 1].getStone() == 0) {
+                    if (board[row][column].isRight() && board[row][column + 1].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 3));
                     }
 
-                    if (boardArray[row][column].isDownRight() && boardArray[row + 1][column + 1].getStone() == 0) {
+                    if (board[row][column].isDownRight() && board[row + 1][column + 1].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 4));
                     }
 
-                    if (boardArray[row][column].isDown() && boardArray[row + 1][column].getStone() == 0) {
+                    if (board[row][column].isDown() && board[row + 1][column].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 5));
                     }
 
-                    if (boardArray[row][column].isDownLeft() && boardArray[row + 1][column - 1].getStone() == 0) {
+                    if (board[row][column].isDownLeft() && board[row + 1][column - 1].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 6));
                     }
 
-                    if (boardArray[row][column].isLeft() && boardArray[row][column - 1].getStone() == 0) {
+                    if (board[row][column].isLeft() && board[row][column - 1].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 7));
                     }
 
-                    if (boardArray[row][column].isUpLeft() && boardArray[row - 1][column - 1].getStone() == 0) {
+                    if (board[row][column].isUpLeft() && board[row - 1][column - 1].getStone() == 0) {
                         possibleMoves.add(new Move(row, column, 8));
                     }
                 }
             }
         }
     }
-    private static  void CheckForPossibleAttacks(int state) //state: which team; 1 = white, 2 = black
+    private static  void CheckForPossibleAttacks(int state,FieldPosition[][] board) //state: which team; 1 = white, 2 = black
     {
             possibleAttack.clear();
             for (Move m: possibleMoves)
@@ -414,18 +414,18 @@ public  class Fanorona
 
                 //isUp
                 if(m.row >=2){
-                    if ( m.direction==1 && boardArray[m.row-1][m.column].isUp()) {
+                    if ( m.direction==1 && board[m.row-1][m.column].isUp()) {
 
-                        if (boardArray[m.row - 2][m.column].getStone() != state && boardArray[m.row - 2][m.column].getStone() != 0) {
+                        if (board[m.row - 2][m.column].getStone() != state && board[m.row - 2][m.column].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
                     }
                 }
                 if(m.row >=1 && m.row <=3 ) {
-                    if (m.direction == 1 && boardArray[m.row - 1][m.column].getStone() == 0) {
+                    if (m.direction == 1 && board[m.row - 1][m.column].getStone() == 0) {
 
-                        if (boardArray[m.row + 1][m.column].getStone() != 0 && boardArray[m.row + 1][m.column].getStone() != state) {
+                        if (board[m.row + 1][m.column].getStone() != 0 && board[m.row + 1][m.column].getStone() != state) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 1));
                         }
@@ -434,18 +434,18 @@ public  class Fanorona
 
                 //isUpRight
                 if(m.row >=2 && m.column <=6){
-                    if ( m.direction==2 && boardArray[m.row-1][m.column+1].isUpRight()) {
+                    if ( m.direction==2 && board[m.row-1][m.column+1].isUpRight()) {
 
-                        if (boardArray[m.row - 2][m.column+2].getStone() != state && boardArray[m.row - 2][m.column+2].getStone() != 0) {
+                        if (board[m.row - 2][m.column+2].getStone() != state && board[m.row - 2][m.column+2].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
                     }
                 }
                 if(m.row >=1 && m.row <=3 && m.column<=7 && m.column>=1) {
-                    if(m.direction==2 && boardArray[m.row-1][m.column+1].getStone()==0){
+                    if(m.direction==2 && board[m.row-1][m.column+1].getStone()==0){
 
-                        if(boardArray[m.row+1][m.column-1].getStone()!=0 && boardArray[m.row+1][m.column-1].getStone()!=state){
+                        if(board[m.row+1][m.column-1].getStone()!=0 && board[m.row+1][m.column-1].getStone()!=state){
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
                         }
@@ -454,18 +454,18 @@ public  class Fanorona
 
                 //isRight
                 if(m.column <= 6){
-                    if ( m.direction==3 && boardArray[m.row][m.column+1].isRight()) {
+                    if ( m.direction==3 && board[m.row][m.column+1].isRight()) {
 
-                        if (boardArray[m.row][m.column+2].getStone() != state && boardArray[m.row][m.column+2].getStone() != 0) {
+                        if (board[m.row][m.column+2].getStone() != state && board[m.row][m.column+2].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
                     }
                 }
                 if(m.column<=7 && m.column>=1){
-                    if(m.direction==3 && boardArray[m.row][m.column+1].getStone()==0){
+                    if(m.direction==3 && board[m.row][m.column+1].getStone()==0){
 
-                        if(boardArray[m.row][m.column-1].getStone()!=0 && boardArray[m.row][m.column-1].getStone()!=state){
+                        if(board[m.row][m.column-1].getStone()!=0 && board[m.row][m.column-1].getStone()!=state){
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
                         }
@@ -474,18 +474,18 @@ public  class Fanorona
 
                 //isDownRight
                 if(m.row <=2 && m.column <=6){
-                    if ( m.direction==4 && boardArray[m.row+1][m.column+1].isDownRight()) {
+                    if ( m.direction==4 && board[m.row+1][m.column+1].isDownRight()) {
 
-                        if (boardArray[m.row+2][m.column+2].getStone() != state && boardArray[m.row+2][m.column+2].getStone() != 0) {
+                        if (board[m.row+2][m.column+2].getStone() != state && board[m.row+2][m.column+2].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
                     }
                 }
                 if(m.row <=3 && m.row >=1 && m.column<=7 && m.column>=1) {
-                    if(m.direction==4 && boardArray[m.row+1][m.column+1].getStone()==0){
+                    if(m.direction==4 && board[m.row+1][m.column+1].getStone()==0){
 
-                        if(boardArray[m.row-1][m.column-1].getStone()!=0 && boardArray[m.row-1][m.column-1].getStone()!=state){
+                        if(board[m.row-1][m.column-1].getStone()!=0 && board[m.row-1][m.column-1].getStone()!=state){
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
                         }
@@ -494,18 +494,18 @@ public  class Fanorona
 
                 //isDown
                 if(m.row <=2){
-                    if ( m.direction==5 && boardArray[m.row+1][m.column].isDown()) {
+                    if ( m.direction==5 && board[m.row+1][m.column].isDown()) {
 
-                        if (boardArray[m.row +2][m.column].getStone() != state && boardArray[m.row + 2][m.column].getStone() != 0) {
+                        if (board[m.row +2][m.column].getStone() != state && board[m.row + 2][m.column].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
                     }
                 }
                 if(m.row <=3 && m.row >=1 ) {
-                    if(m.direction==5 && boardArray[m.row+1][m.column].getStone()==0){
+                    if(m.direction==5 && board[m.row+1][m.column].getStone()==0){
 
-                        if(boardArray[m.row-1][m.column].getStone()!=0 && boardArray[m.row-1][m.column].getStone()!=state){
+                        if(board[m.row-1][m.column].getStone()!=0 && board[m.row-1][m.column].getStone()!=state){
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
                         }
@@ -514,9 +514,9 @@ public  class Fanorona
 
                 //isDownLeft
                 if(m.row <=2 && m.column>=2){
-                    if ( m.direction==6 && boardArray[m.row+1][m.column-1].isDownLeft()) {
+                    if ( m.direction==6 && board[m.row+1][m.column-1].isDownLeft()) {
 
-                        if (boardArray[m.row +2][m.column-2].getStone() != state && boardArray[m.row + 2][m.column-2].getStone() != 0) {
+                        if (board[m.row +2][m.column-2].getStone() != state && board[m.row + 2][m.column-2].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
@@ -524,9 +524,9 @@ public  class Fanorona
                 }
 
                 if(m.row <=3 && m.row >=1 && m.column >=1 && m.column<=7) {
-                    if(m.direction==6 && boardArray[m.row+1][m.column-1].getStone()==0){
+                    if(m.direction==6 && board[m.row+1][m.column-1].getStone()==0){
 
-                        if(boardArray[m.row-1][m.column+1].getStone()!=0 && boardArray[m.row-1][m.column+1].getStone()!=state){
+                        if(board[m.row-1][m.column+1].getStone()!=0 && board[m.row-1][m.column+1].getStone()!=state){
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
                         }
@@ -535,18 +535,18 @@ public  class Fanorona
 
                 //isLeft
                 if(m.column>=2){
-                    if ( m.direction==7 && boardArray[m.row][m.column-1].isLeft()) {
+                    if ( m.direction==7 && board[m.row][m.column-1].isLeft()) {
 
-                        if (boardArray[m.row][m.column-2].getStone() != state && boardArray[m.row][m.column-2].getStone() != 0) {
+                        if (board[m.row][m.column-2].getStone() != state && board[m.row][m.column-2].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
                     }
                 }
                 if( m.column>=1 && m.column<=7){
-                    if(m.direction==7 && boardArray[m.row][m.column-1].getStone()==0){
+                    if(m.direction==7 && board[m.row][m.column-1].getStone()==0){
 
-                        if(boardArray[m.row][m.column+1].getStone()!=0 && boardArray[m.row][m.column+1].getStone()!=state){
+                        if(board[m.row][m.column+1].getStone()!=0 && board[m.row][m.column+1].getStone()!=state){
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
                         }
@@ -555,18 +555,18 @@ public  class Fanorona
 
                 //isUpLeft
                 if(m.column>=2 && m.row>=2){
-                    if ( m.direction==8 && boardArray[m.row-1][m.column-1].isUpLeft()) {
+                    if ( m.direction==8 && board[m.row-1][m.column-1].isUpLeft()) {
 
-                        if (boardArray[m.row - 2][m.column-2].getStone() != state && boardArray[m.row - 2][m.column-2].getStone() != 0) {
+                        if (board[m.row - 2][m.column-2].getStone() != state && board[m.row - 2][m.column-2].getStone() != 0) {
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction, 0));
                         }
                     }
                 }
                 if(m.column>=1 && m.column<= 7 && m.row>=1 && m.row<=3){
-                    if(m.direction==8 && boardArray[m.row-1][m.column-1].getStone()==0){
+                    if(m.direction==8 && board[m.row-1][m.column-1].getStone()==0){
 
-                        if(boardArray[m.row+1][m.column+1].getStone()!=0 && boardArray[m.row+1][m.column+1].getStone()!=state){
+                        if(board[m.row+1][m.column+1].getStone()!=0 && board[m.row+1][m.column+1].getStone()!=state){
 
                             possibleAttack.add(new Attack(m.row, m.column, m.direction,1));
                         }
