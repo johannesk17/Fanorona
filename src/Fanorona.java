@@ -660,7 +660,7 @@ public  class Fanorona
     //TODO AI functions ->
     //TODO merge attack(int row, int column, int direction, int moveType) and Move (Move(int row, int column, int direction))
 
-    static public Attack getMove(int state, FieldPosition[][] board) {
+    /*static public Attack getMove(int state, FieldPosition[][] board) {
         Random rand = new Random();
         int min = 0;
         int max = 0;
@@ -671,47 +671,72 @@ public  class Fanorona
 
             return minimax(state, board);
         }
-        else{ //TODO not using random move but doing minmax with possible moves instead of attacks
+        else{
 
             CheckForPossibleMoves(state,board);
             max = possibleMoves.size() - 1;
             randomNum = rand.nextInt(max - min + 1) + min;
 
-            //Move bestMove = possibleMoves.get(randomNum);
-            // return bestMove;
 
-            return possibleAttack.get(randomNum);
+
+            Attack bestMove = possibleMoves.get(randomNum);
+
+             return bestMove;
+
+           // return possibleAttack.get(randomNum);
 
         }
-    }
+    }*/
 
     static public Attack minimax (int state,FieldPosition[][] board){
         FieldPosition[][] nextBoard;
         int value, maxValue = Integer.MIN_VALUE;
-        Attack bestMove = new Attack(0,0,0,0);
+        Attack bestMove;
 
-        //ArrayList<Move> possibleMoveList = getValidMoves(gameBoard);
+        CheckForPossibleMoves(state,board);
         CheckForPossibleAttacks(state,board);
 
         if(possibleAttack.size() != 0) {
 
             bestMove = possibleAttack.get(0);
-        }
-        int i=0;
-        for (Attack possibleMove: possibleAttack){
 
-            nextBoard = (FieldPosition[][]) board.clone();
+            for (Attack possibleMove : possibleAttack) {
 
-            nextBoard = possibleMove.makeMove(board);  //todo enable boardchange based on move
+                nextBoard = possibleMove.makeMove(board);  //todo enable boardchange based on move
 
-            value = minMove(state, nextBoard, 5, maxValue, Integer.MAX_VALUE);
+                value = minMove(state, nextBoard, 5, maxValue, Integer.MAX_VALUE);
 
-            if (value > maxValue) {
-                maxValue = value;
-                bestMove = possibleAttack.get(i);
+                if (value > maxValue) {
+                    maxValue = value;
+                    bestMove = possibleMove;
+                }
             }
-            i++;
-         }
+        } else {
+
+            ArrayList<Attack> possibleConvertedMoves = new ArrayList<>();
+
+            for (Move convMove: possibleMoves){
+                Attack conversionAttack = new Attack(convMove.row,convMove.column,convMove.direction,3);
+                possibleConvertedMoves.add(conversionAttack);
+            }
+
+            bestMove = possibleConvertedMoves.get(0);
+            for (Attack possibleMove : possibleConvertedMoves){
+
+                nextBoard = possibleMove.makeMove(board);  //todo enable boardchange based on move
+
+                value = minMove(state, nextBoard, 5, maxValue, Integer.MAX_VALUE);
+
+                if (value > maxValue) {
+                    maxValue = value;
+                    bestMove = possibleMove;
+                }
+
+            }
+
+        }
+
+
         return bestMove;
     }
 
@@ -720,9 +745,9 @@ public  class Fanorona
         if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
             return evaluateBoard(board);
         }
-
         FieldPosition[][] nextBoard;
         int value;
+        CheckForPossibleMoves(state,board);
         CheckForPossibleAttacks(state,board);
 
         for (Attack possibleMove: possibleAttack){
@@ -750,6 +775,8 @@ public  class Fanorona
 
         FieldPosition[][] nextBoard;
         int value;
+
+        CheckForPossibleMoves(state,board);
         CheckForPossibleAttacks(state,board);
 
         for (Attack possibleMove: possibleAttack){
