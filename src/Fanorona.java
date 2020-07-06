@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Author: Kainz, Kaltenbäck, Katalinic
@@ -409,6 +410,7 @@ public  class Fanorona
     private static  void CheckForPossibleAttacks(int state,FieldPosition[][] board) //state: which team; 1 = white, 2 = black
     {
             possibleAttack.clear();
+            CheckForPossibleMoves(state,board);
             for (Move m: possibleMoves)
             {
 
@@ -654,4 +656,131 @@ public  class Fanorona
             }
         }
     }
+
+    //TODO AI functions ->
+    //TODO merge attack(int row, int column, int direction, int moveType) and Move (Move(int row, int column, int direction))
+
+    static public Attack getMove(int state, FieldPosition[][] board) {
+        Random rand = new Random();
+        int min = 0;
+        int max = 0;
+        int randomNum = 0;
+        CheckForPossibleAttacks(state,board);
+
+        if( possibleAttack.size() != 0){
+
+            return minimax(state, board);
+        }
+        else{ //TODO not using random move but doing minmax with possible moves instead of attacks
+
+            CheckForPossibleMoves(state,board);
+            max = possibleMoves.size() - 1;
+            randomNum = rand.nextInt(max - min + 1) + min;
+
+            //Move bestMove = possibleMoves.get(randomNum);
+            // return bestMove;
+
+            return possibleAttack.get(randomNum);
+
+        }
+    }
+
+    static public Attack minimax (int state,FieldPosition[][] board){
+        FieldPosition[][] nextBoard;
+        int value, maxValue = Integer.MIN_VALUE;
+        Attack bestMove = new Attack(0,0,0,0);
+
+        //ArrayList<Move> possibleMoveList = getValidMoves(gameBoard);
+        CheckForPossibleAttacks(state,board);
+
+        if(possibleAttack.size() != 0) {
+
+            bestMove = possibleAttack.get(0);
+        }
+        int i=0;
+        for (Attack possibleMove: possibleAttack){
+
+            nextBoard = (FieldPosition[][]) board.clone();
+
+            nextBoard = possibleMove.makeMove(board);  //todo enable boardchange based on move
+
+            value = minMove(state, nextBoard, 5, maxValue, Integer.MAX_VALUE);
+
+            if (value > maxValue) {
+                maxValue = value;
+                bestMove = possibleAttack.get(i);
+            }
+            i++;
+         }
+        return bestMove;
+    }
+
+    static public int minMove (int state, FieldPosition[][] board, int depth, int alpha, int beta){
+
+        if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
+            return evaluateBoard(board);
+        }
+
+        FieldPosition[][] nextBoard;
+        int value;
+        CheckForPossibleAttacks(state,board);
+
+        for (Attack possibleMove: possibleAttack){
+
+            nextBoard = (FieldPosition[][]) board.clone();
+            nextBoard = possibleMove.makeMove(board);   //todo enable boardchange based on move
+            value = maxMove (state, nextBoard, depth - 1, alpha, beta);
+
+            if (value < beta) {
+                beta = value;
+            }
+
+            if (beta < alpha) {
+                return alpha;
+            }
+        }
+        return beta;
+    }
+
+    static public int maxMove (int state, FieldPosition[][] board, int depth, int alpha, int beta){
+
+        if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
+            return evaluateBoard(board);
+        }
+
+        FieldPosition[][] nextBoard;
+        int value;
+        CheckForPossibleAttacks(state,board);
+
+        for (Attack possibleMove: possibleAttack){
+
+            nextBoard = (FieldPosition[][]) board.clone();
+            nextBoard = possibleMove.makeMove(board);   //todo enable boardchange based on move
+            value = minMove (state, nextBoard, depth - 1, alpha, beta);
+
+            if (value > alpha) {
+                alpha = value;
+            }
+            if (alpha > beta) {
+                return beta;
+            }
+        }
+        return alpha;
+    }
+
+    static int evaluateBoard(FieldPosition[][] board){
+        int value = 0;
+
+        for (int x = 0; x < 5; x++){
+            for (int y = 0; y < 9; y++){
+                if(board[x][y].getStone() == 1) value++;
+                if(board[x][y].getStone() == 0) value--;
+            }
+        }
+        return value;
+    }
+
+
+
+
 }
