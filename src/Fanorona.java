@@ -89,7 +89,7 @@ public  class Fanorona
             if(counter==2) System.out.println("Turn of black (#) player!");
 
             if(GetUserInput()){
-                ChangeStateNotes(userInput);
+                boardArray = ChangeStateNotes(userInput, boardArray)
                 if(userInput[4]!=2) attacked = true;
                 else{
                     attacked = false;
@@ -235,7 +235,8 @@ public  class Fanorona
 
 
     }
-    private static void ChangeStateNotes(int[] currentUserInput)
+
+    private static FieldPosition[][] ChangeStateNotes(int[] currentUserInput, FieldPosition[][] board)
     {
         /*currentUserInput[0] --> row of old position
          currentUserInput[1] --> column of old position
@@ -246,7 +247,7 @@ public  class Fanorona
 
         int rowChange = currentUserInput[2] - currentUserInput[0];
         int columnChange = currentUserInput[3] - currentUserInput[1];
-        int currentPlayer = boardArray[currentUserInput[0]][currentUserInput[1]].getStone();
+        int currentPlayer = board[currentUserInput[0]][currentUserInput[1]].getStone();
         boolean changeFinished = false;
         int stoneCounter = 1;
         int stoneToCheckRow;
@@ -260,8 +261,8 @@ public  class Fanorona
                     stoneToCheckRow = currentUserInput[2] + (rowChange * stoneCounter);
                     stoneToCheckColumn = currentUserInput[3] + (columnChange * stoneCounter);
 
-                    if (boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != currentPlayer && boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != 0) {
-                        boardArray[stoneToCheckRow][stoneToCheckColumn].setStone(0);
+                    if (board[stoneToCheckRow][stoneToCheckColumn].getStone() != currentPlayer && board[stoneToCheckRow][stoneToCheckColumn].getStone() != 0) {
+                        board[stoneToCheckRow][stoneToCheckColumn].setStone(0);
                         stoneCounter++;
                     } else {
                         changeFinished = true;
@@ -285,8 +286,8 @@ public  class Fanorona
                     stoneToCheckRow = currentUserInput[2] - (rowChange * stoneCounter);
                     stoneToCheckColumn = currentUserInput[3] - (columnChange * stoneCounter);
 
-                    if (boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != currentPlayer && boardArray[stoneToCheckRow][stoneToCheckColumn].getStone() != 0) {
-                        boardArray[stoneToCheckRow][stoneToCheckColumn].setStone(0);
+                    if (board[stoneToCheckRow][stoneToCheckColumn].getStone() != currentPlayer && board[stoneToCheckRow][stoneToCheckColumn].getStone() != 0) {
+                        board[stoneToCheckRow][stoneToCheckColumn].setStone(0);
                         stoneCounter++;
                     } else {
                         changeFinished = true;
@@ -302,8 +303,10 @@ public  class Fanorona
 
             }
         }
-        boardArray[currentUserInput[2]][currentUserInput[3]].setStone(boardArray[currentUserInput[0]][currentUserInput[1]].getStone());
-        boardArray[currentUserInput[0]][currentUserInput[1]].setStone(0);
+        board[currentUserInput[2]][currentUserInput[3]].setStone(board[currentUserInput[0]][currentUserInput[1]].getStone());
+        board[currentUserInput[0]][currentUserInput[1]].setStone(0);
+
+        return board;
     }
 
     /**
