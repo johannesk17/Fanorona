@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -87,10 +88,12 @@ public  class Fanorona
             DrawField();
             if(counter==1) System.out.println("Turn of white (o) player!");
             if(counter==2) System.out.println("Turn of black (#) player!");
-            FieldPosition[][] cloneBoard= boardArray.clone();
+            FieldPosition[][] cloneBoard= copyArray(boardArray);
+
 
             Attack BestMove = minimax(counter,cloneBoard); //TODO
             System.out.printf("Best Move: Row- %d  Column- %d  Dir- %d",BestMove.row,BestMove.column,BestMove.direction);
+            System.out.println("");
 
             if(GetUserInput()){
                 boardArray = ChangeStateNotes(userInput, boardArray);
@@ -248,7 +251,7 @@ public  class Fanorona
          currentUserInput[3] --> column of new position
          currentUserInput[4] --> move type --> 0: Attack, 1: Reverse, 2: simple move without action
          */
-        FieldPosition[][] newBoard= board.clone();
+        FieldPosition[][] newBoard= copyArray(board);
         int rowChange = currentUserInput[2] - currentUserInput[0];
         int columnChange = currentUserInput[3] - currentUserInput[1];
         int currentPlayer = newBoard[currentUserInput[0]][currentUserInput[1]].getStone();
@@ -668,38 +671,10 @@ public  class Fanorona
     }
 
     //TODO AI functions ->
-    //TODO merge attack(int row, int column, int direction, int moveType) and Move (Move(int row, int column, int direction))
 
-    /*static public Attack getMove(int state, FieldPosition[][] board) {
-        Random rand = new Random();
-        int min = 0;
-        int max = 0;
-        int randomNum = 0;
-        CheckForPossibleAttacks(state,board);
-
-        if( possibleAttack.size() != 0){
-
-            return minimax(state, board);
-        }
-        else{
-
-            CheckForPossibleMoves(state,board);
-            max = possibleMoves.size() - 1;
-            randomNum = rand.nextInt(max - min + 1) + min;
-
-
-
-            Attack bestMove = possibleMoves.get(randomNum);
-
-             return bestMove;
-
-           // return possibleAttack.get(randomNum);
-
-        }
-    }*/
 
     static public Attack minimax (int state,FieldPosition[][] board){
-        FieldPosition[][] nextBoard=board.clone();
+        FieldPosition[][] nextBoard= copyArray(board);
         int value, alpha = Integer.MIN_VALUE, beta =Integer.MAX_VALUE;
         Attack bestMove;
 
@@ -756,16 +731,16 @@ public  class Fanorona
         if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
             return evaluateBoard(board);
         }
-        FieldPosition[][] nextBoard;
+        FieldPosition[][] nextBoard= copyArray(board);
         int value;
 
-        ArrayList<Move> checkMoves=CheckForPossibleMoves(state,board);
-        ArrayList<Attack> checkAttack=CheckForPossibleAttacks(state,board,checkMoves);
+        ArrayList<Move> checkMoves=CheckForPossibleMoves(state,nextBoard);
+        ArrayList<Attack> checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
 
         for (Attack possibleMove: checkAttack){
 
 
-            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),board);   //todo enable boardchange based on move
+            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
             state = (state==1) ? 2:1;
             value = maxMove (state, nextBoard, depth - 1, alpha, beta);
 
@@ -786,16 +761,16 @@ public  class Fanorona
             return evaluateBoard(board);
         }
 
-        FieldPosition[][] nextBoard;
+        FieldPosition[][] nextBoard= copyArray(board);
         int value;
 
-        ArrayList<Move> checkMoves=CheckForPossibleMoves(state,board);
-        ArrayList<Attack> checkAttack=CheckForPossibleAttacks(state,board,checkMoves);
+        ArrayList<Move> checkMoves=CheckForPossibleMoves(state,nextBoard);
+        ArrayList<Attack> checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
 
         for (Attack possibleMove: checkAttack){
 
 
-            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),board);   //todo enable boardchange based on move
+            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
             state = (state==1) ? 2:1;
             value = minMove (state, nextBoard, depth - 1, alpha, beta);
 
@@ -872,6 +847,16 @@ public  class Fanorona
         return newAttack;
     }
 
+    static FieldPosition[][] copyArray(FieldPosition[][] input) {
+        if (input == null){
+            return null;
+        }
+        FieldPosition[][] result = new FieldPosition[input.length][];
+        for (int r = 0; r < input.length; r++) {
+            result[r] = Arrays.copyOf(input[r], input[r].length);
+        }
+        return result;
+    }
 
 
 
