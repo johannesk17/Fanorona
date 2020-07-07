@@ -4,7 +4,7 @@ public class Attack {
     int row;
     int column;
     int direction; //1 = up, 2 = up right, 3 = right, 4 = down right, 5 = down, 6 = down left, 7 = left, 8 = up left
-    int moveType; //1 = attack, 2 = retreat, 3 = move
+    int moveType; //0 = attack, 1 = retreat, 2 = move
 
     public int getRow() {
         return row;
