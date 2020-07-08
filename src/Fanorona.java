@@ -92,7 +92,7 @@ public  class Fanorona
             FieldPosition[][] cloneBoard= copyArray(boardArray);
 
 
-            Attack BestMove = minimax(counter,cloneBoard); //TODO
+            Attack BestMove = minimax(counter,cloneBoard,possibleAttack); //TODO
             int[]BestMoveConv = convertToAttack(BestMove);
             System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
             System.out.println("");
@@ -676,13 +676,13 @@ public  class Fanorona
     //TODO AI functions ->
 
 
-    static public Attack minimax (int state,FieldPosition[][] board){
+    static public Attack minimax (int state,FieldPosition[][] board,ArrayList<Attack> globalAttack){
         FieldPosition[][] nextBoard= copyArray(board);
         int value, alpha = Integer.MIN_VALUE, beta =Integer.MAX_VALUE;
         Attack bestMove;
 
         ArrayList<Move> checkMoves=CheckForPossibleMoves(state,nextBoard);
-        ArrayList<Attack> checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+        ArrayList<Attack> checkAttack= (ArrayList<Attack>) globalAttack.clone();
 
         if(checkAttack.size() != 0) {
 
@@ -695,12 +695,16 @@ public  class Fanorona
 
                 checkMoves=CheckForPossibleMoves(state,nextBoard);
                 checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
-                //todo trimm function
-                //todo check if another move is possible // wenn ja dann maxmove
+                TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
+                if (checkAttack.size()==0){
+                    state = (state==1) ? 2:1;
+                    value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                }else {
+                    value = maxMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                }
 
 
-                state = (state==1) ? 2:1;
-                value = minMove(state, nextBoard, 5, alpha, beta);
+
 
                 if (value > alpha) {
                     alpha = value;
@@ -721,7 +725,7 @@ public  class Fanorona
 
                 nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);  //todo enable boardchange based on move
                 state = (state==1) ? 2:1;
-                value = minMove(state, nextBoard, 5, alpha, beta);
+                value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
 
                 if (value > alpha) {
                     alpha = value;
@@ -736,23 +740,40 @@ public  class Fanorona
         return bestMove;
     }
 
-    static public int minMove (int state, FieldPosition[][] board, int depth, int alpha, int beta){
+    static public int minMove (int state, FieldPosition[][] board, int depth, int alpha, int beta,ArrayList<Attack>checkPrevAttack){
 
         if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
             return evaluateBoard(board);
         }
+
         FieldPosition[][] nextBoard= copyArray(board);
         int value;
+        ArrayList<Move> checkMoves;
+        ArrayList<Attack> checkAttack;
 
-        ArrayList<Move> checkMoves=CheckForPossibleMoves(state,nextBoard);
-        ArrayList<Attack> checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+        if(checkPrevAttack.size()==0){
+            checkMoves=CheckForPossibleMoves(state,nextBoard);
+            checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+        }else {
+            checkAttack= (ArrayList<Attack>) checkPrevAttack.clone();
+        }
 
         for (Attack possibleMove: checkAttack){
 
 
             nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
-            state = (state==1) ? 2:1;
-            value = maxMove (state, nextBoard, depth - 1, alpha, beta);
+            checkMoves=CheckForPossibleMoves(state,nextBoard);
+            checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+            TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
+
+            if (checkAttack.size()==0){
+                state = (state==1) ? 2:1;
+                value = maxMove(state, nextBoard, 5, alpha, beta,checkAttack);
+            }else {
+                value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
+            }
+
+
 
             if (value < beta) {
                 beta = value;
@@ -765,28 +786,37 @@ public  class Fanorona
         return beta;
     }
 
-    static public int maxMove (int state, FieldPosition[][] board, int depth, int alpha, int beta){
+    static public int maxMove (int state, FieldPosition[][] board, int depth, int alpha, int beta,ArrayList<Attack>checkPrevAttack){
 
         if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
             return evaluateBoard(board);
         }
 
-
         FieldPosition[][] nextBoard= copyArray(board);
         int value;
+        ArrayList<Move> checkMoves;
+        ArrayList<Attack> checkAttack;
 
-        ArrayList<Move> checkMoves=CheckForPossibleMoves(state,nextBoard);
-        ArrayList<Attack> checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+        if(checkPrevAttack.size()==0){
+            checkMoves=CheckForPossibleMoves(state,nextBoard);
+            checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+        }else {
+            checkAttack= (ArrayList<Attack>) checkPrevAttack.clone();
+        }
 
         for (Attack possibleMove: checkAttack){
 
-            if(convertToAttack(possibleMove)[4]!=2) {
-                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);
-                value = maxMove (state, nextBoard, depth, alpha, beta);
-            }else {
-                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
+
+            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
+            checkMoves=CheckForPossibleMoves(state,nextBoard);
+            checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+            TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
+
+            if (checkAttack.size()==0){
                 state = (state==1) ? 2:1;
-                value = minMove (state, nextBoard, depth - 1, alpha, beta);
+                value = maxMove(state, nextBoard, 5, alpha, beta,checkAttack);
+            }else {
+                value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
             }
 
             if (value > alpha) {
