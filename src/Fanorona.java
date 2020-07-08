@@ -692,6 +692,13 @@ public  class Fanorona
 
 
                 nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);  //todo enable boardchange based on move
+
+                checkMoves=CheckForPossibleMoves(state,nextBoard);
+                checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
+                //todo trimm function
+                //todo check if another move is possible // wenn ja dann maxmove
+
+
                 state = (state==1) ? 2:1;
                 value = minMove(state, nextBoard, 5, alpha, beta);
 
@@ -764,6 +771,7 @@ public  class Fanorona
             return evaluateBoard(board);
         }
 
+
         FieldPosition[][] nextBoard= copyArray(board);
         int value;
 
@@ -772,10 +780,14 @@ public  class Fanorona
 
         for (Attack possibleMove: checkAttack){
 
-
-            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
-            state = (state==1) ? 2:1;
-            value = minMove (state, nextBoard, depth - 1, alpha, beta);
+            if(convertToAttack(possibleMove)[4]!=2) {
+                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);
+                value = maxMove (state, nextBoard, depth, alpha, beta);
+            }else {
+                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
+                state = (state==1) ? 2:1;
+                value = minMove (state, nextBoard, depth - 1, alpha, beta);
+            }
 
             if (value > alpha) {
                 alpha = value;
