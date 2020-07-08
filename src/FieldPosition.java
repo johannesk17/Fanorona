@@ -96,4 +96,23 @@ public class FieldPosition
         this.left = false;
         this.upLeft = false;
     }
+    public FieldPosition(int stone, boolean up, boolean upRight, boolean right, boolean downRight, boolean down, boolean downLeft, boolean left, boolean upLeft)
+    {
+        this.stone = stone;
+        this.up = up;
+        this.upRight = upRight;
+        this.right = right;
+        this.downRight = downRight;
+        this.down = down;
+        this.downLeft = downLeft;
+        this.left = left;
+        this.upLeft = upLeft;
+    }
+
+    public FieldPosition DeepCopy()
+    {
+        FieldPosition copiedObject = new FieldPosition(this.stone, this.up, this.upRight, this.right, this.downRight, this.down, this.downLeft, this.left, this.upLeft);
+
+        return copiedObject;
+    }
 }

@@ -851,10 +851,25 @@ public  class Fanorona
         if (input == null){
             return null;
         }
-        FieldPosition[][] result = new FieldPosition[input.length][];
-        for (int r = 0; r < input.length; r++) {
-            result[r] = Arrays.copyOf(input[r], input[r].length);
+
+        FieldPosition[][] result = new FieldPosition[input.length][input[0].length];
+
+        try
+        {
+            for (int r = 0; r < input.length; r++)
+            {
+                for (int s=0;s<input[r].length; s++)
+                {
+                    result [r][s] = input[r][s].DeepCopy();
+                }
+
+            }
         }
+        catch (NullPointerException e)
+        {
+            System.out.println(e.getMessage());
+        }
+
         return result;
     }
 
