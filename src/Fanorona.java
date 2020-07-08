@@ -138,10 +138,129 @@ public  class Fanorona
 
     private static void PvAIMode(){
         System.out.println("PvAI");
+        InitializeField();
+        boolean attacked = false;
+        int counter = 1;
+        int[]BestMoveConv = new int[6];
+        while(winCondition(boardArray)==3){
+
+            possibleMoves=CheckForPossibleMoves(counter,boardArray);
+            possibleAttack=CheckForPossibleAttacks(counter,boardArray,possibleMoves);
+            if(attacked && counter==1){
+                TrimToNodeActions(possibleAttack,userInput);
+
+                if(possibleAttack.isEmpty()){
+                    attacked = false;
+                    counter = (counter==1) ? 2:1;
+                    continue;
+                }
+            }
+            if(attacked && counter == 2){
+                TrimToNodeActions(possibleAttack,BestMoveConv);
+
+                if(possibleAttack.isEmpty()){
+                    attacked = false;
+                    counter = (counter==1) ? 2:1;
+                    continue;
+                }
+            }
+            DrawField();
+            FieldPosition[][] cloneBoard= copyArray(boardArray);
+            if(counter==1){
+                System.out.println("Turn of white (o) player!");
+                if(GetUserInput()){
+                    attacked = false;
+                    boardArray = ChangeStateNotes(userInput, boardArray);
+                    if(userInput[4]!=2) attacked = true;
+                    else{
+                        attacked = false;
+                        counter = (counter==1) ? 2:1;
+                        continue;
+                    }
+                }
+            }
+            if(counter==2){
+                System.out.println("Turn of black (#) player!");
+                Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
+                BestMoveConv= convertToAttack(BestMove);
+                System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
+                System.out.println("");
+                attacked = false;
+                boardArray = ChangeStateNotes(BestMoveConv,boardArray);
+                if(BestMoveConv[4]!=2) attacked = true;
+                else{
+                    attacked = false;
+                    counter = (counter==1) ? 2:1;
+                }
+            }
+
+        }
+        if(winCondition(boardArray)==1) System.out.println("BLACK WON!");
+        else if(winCondition(boardArray)==0) System.out.println("WHITE WON!");
+        else{
+            System.out.println("DRAW!");
+        }
     }
 
     private static void  AIvsAiMode(){
         System.out.println("AIvAI");
+        InitializeField();
+        boolean attacked = false;
+        int counter = 1;
+        int[]BestMoveConv = new int[6];
+        while(winCondition(boardArray)==3){
+
+            possibleMoves=CheckForPossibleMoves(counter,boardArray);
+            possibleAttack=CheckForPossibleAttacks(counter,boardArray,possibleMoves);
+            if(attacked){
+                TrimToNodeActions(possibleAttack,BestMoveConv);
+
+                if(possibleAttack.isEmpty()){
+                    attacked = false;
+                    counter = (counter==1) ? 2:1;
+                    continue;
+                }
+            }
+
+            DrawField();
+            FieldPosition[][] cloneBoard= copyArray(boardArray);
+
+            if(counter==1){
+                System.out.println("Turn of white (o) player!");
+                Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
+                BestMoveConv= convertToAttack(BestMove);
+                System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
+                System.out.println("");
+                attacked = false;
+                boardArray = ChangeStateNotes(BestMoveConv,boardArray);
+                if(BestMoveConv[4]!=2) attacked = true;
+                else{
+                    attacked = false;
+                    counter = (counter==1) ? 2:1;
+                    continue;
+                }
+            }
+            if(counter==2){
+                System.out.println("Turn of black (#) player!");
+                Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
+                BestMoveConv= convertToAttack(BestMove);
+                System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
+                System.out.println("");
+                attacked = false;
+                boardArray = ChangeStateNotes(BestMoveConv,boardArray);
+                if(BestMoveConv[4]!=2) attacked = true;
+                else{
+                    attacked = false;
+                    counter = (counter==1) ? 2:1;
+                }
+            }
+
+        }
+        if(winCondition(boardArray)==1) System.out.println("BLACK WON!");
+        else if(winCondition(boardArray)==0) System.out.println("WHITE WON!");
+        else{
+            System.out.println("DRAW!");
+        }
     }
 
     /**
