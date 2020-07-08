@@ -79,8 +79,9 @@ public  class Fanorona
             possibleAttack=CheckForPossibleAttacks(counter,boardArray,possibleMoves);
             if(attacked){
                 TrimToNodeActions();
-                attacked = false;
+
                 if(possibleAttack.isEmpty()){
+                    attacked = false;
                     counter = (counter==1) ? 2:1;
                     continue;
                 }
@@ -96,7 +97,8 @@ public  class Fanorona
             System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
             System.out.println("");
 
-            if(GetUserInput()){ //TODO 1 turn delay bug
+            if(GetUserInput()){
+                attacked = false;
                 boardArray = ChangeStateNotes(userInput, boardArray);
                 if(userInput[4]!=2) attacked = true;
                 else{
