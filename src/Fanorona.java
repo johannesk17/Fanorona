@@ -92,10 +92,11 @@ public  class Fanorona
 
 
             Attack BestMove = minimax(counter,cloneBoard); //TODO
-            System.out.printf("Best Move: Row- %d  Column- %d  Dir- %d",BestMove.row,BestMove.column,BestMove.direction);
+            int[]BestMoveConv = convertToAttack(BestMove);
+            System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
             System.out.println("");
 
-            if(GetUserInput()){
+            if(GetUserInput()){ //TODO 1 turn delay bug
                 boardArray = ChangeStateNotes(userInput, boardArray);
                 if(userInput[4]!=2) attacked = true;
                 else{
