@@ -78,7 +78,7 @@ public  class Fanorona
             possibleMoves=CheckForPossibleMoves(counter,boardArray);
             possibleAttack=CheckForPossibleAttacks(counter,boardArray,possibleMoves);
             if(attacked){
-                TrimToNodeActions();
+                TrimToNodeActions(possibleAttack,userInput);
 
                 if(possibleAttack.isEmpty()){
                     attacked = false;
@@ -149,18 +149,18 @@ public  class Fanorona
      * all attack nodes are cleared except the last user input node destination
      * this method gets called before a new user input if an attack was launched last turn
      */
-    private static void TrimToNodeActions(){
+    private static void TrimToNodeActions(ArrayList<Attack> possibleAttackList,int [] userInputArray){
 
-       for(int i=0 ; i<possibleAttack.size();i++){
-            Attack att = possibleAttack.get(i);
-            if(att.column != userInput[3] || att.row != userInput[2])
+       for(int i=0 ; i<possibleAttackList.size();i++){
+            Attack att = possibleAttackList.get(i);
+            if(att.column != userInputArray[3] || att.row != userInputArray[2])
             {
-                possibleAttack.remove(i);
+                possibleAttackList.remove(i);
                 i--;
             }
             else {
-                if(Math.abs(att.direction-userInput[5])==4){
-                    possibleAttack.remove(i);
+                if(Math.abs(att.direction-userInputArray[5])==4){
+                    possibleAttackList.remove(i);
                     i--;
                 }
             }
