@@ -136,6 +136,11 @@ public  class Fanorona
         }
     }
 
+    /**
+     * PVAIMode is the same as PVPMode only instead of 2 userinputs
+     * AI decides turn of # black player
+     * for further information look at PvpMode method
+     */
     private static void PvAIMode(){
         System.out.println("PvAI");
         InitializeField();
@@ -208,6 +213,11 @@ public  class Fanorona
         }
     }
 
+    /**
+     * AIVAIMode is the same as PVPMode only instead of 2 userinputs
+     * AI decides both black and white player turns
+     * for further information look at PvpMode method
+     */
     private static void  AIvsAiMode(){
         System.out.println("AIvAI");
         InitializeField();
