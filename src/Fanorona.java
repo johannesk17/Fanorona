@@ -20,7 +20,7 @@ public  class Fanorona
 
     private static int[] userInput = new int[6];
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         System.out.println("Start");
         Start();
     }
@@ -181,7 +181,13 @@ public  class Fanorona
             }
             if(counter==2){
                 System.out.println("Turn of black (#) player!");
+
+                long startTime = System.currentTimeMillis();
                 Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
+                long stopTime = System.currentTimeMillis();
+                long elapsedTime = stopTime - startTime;
+                System.out.println("Time needed for calculation of this move [ms]: " + elapsedTime);
+
                 BestMoveConv= convertToAttack(BestMove);
                 System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
                 System.out.println("");
@@ -227,7 +233,13 @@ public  class Fanorona
 
             if(counter==1){
                 System.out.println("Turn of white (o) player!");
+
+                long startTime = System.currentTimeMillis();
                 Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
+                long stopTime = System.currentTimeMillis();
+                long elapsedTime = stopTime - startTime;
+                System.out.println("Time needed for calculation of this move [ms]: " + elapsedTime);
+
                 BestMoveConv= convertToAttack(BestMove);
                 System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
                 System.out.println("");
@@ -242,7 +254,14 @@ public  class Fanorona
             }
             if(counter==2){
                 System.out.println("Turn of black (#) player!");
+
+                long startTime = System.currentTimeMillis();
                 Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
+                long stopTime = System.currentTimeMillis();
+                long elapsedTime = stopTime - startTime;
+                System.out.println("Time needed for calculation of this move [ms]: " + elapsedTime);
+
+
                 BestMoveConv= convertToAttack(BestMove);
                 System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
                 System.out.println("");
@@ -821,8 +840,6 @@ public  class Fanorona
                 }else {
                     value = maxMove(state, nextBoard, 16, alpha, beta,checkAttack);
                 }
-
-
 
 
                 if (value > alpha) {
