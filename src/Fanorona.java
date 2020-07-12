@@ -92,7 +92,7 @@ public  class Fanorona
             FieldPosition[][] cloneBoard= copyArray(boardArray);
 
 
-            Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
+            Attack BestMove = minimax(counter,cloneBoard,possibleAttack); 
             int[]BestMoveConv = convertToAttack(BestMove);
             System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
             System.out.println("");
@@ -315,6 +315,14 @@ public  class Fanorona
         }
     }
 
+    /**
+     * GetUserInput asks the user to type in the desired move. It asks for the row and
+     * column of the stone the user want to move and the row and column where the stone should
+     * be moved and the type of move (forward attack, reverse attack, move without attack).
+     * It also checks if the move the user typed in is a valid move/attack using possibleAttacks
+     * and possibleMoves lists. It returns true only when the user typed in a valid move.
+     */
+
     private static boolean GetUserInput()
     {
         int oldRow;
@@ -393,6 +401,13 @@ public  class Fanorona
 
 
     }
+
+    /**
+     * ChangeStateNotes uses the input parameter int[] currentUserInput to change
+     * and return the input parameter FieldPosition[][] board. Depending on the user
+     * input (forward attack or reverse attack), it removes the stones of the oponent
+     * and also moves the respective stone.
+     */
 
     private static FieldPosition[][] ChangeStateNotes(int[] currentUserInput, FieldPosition[][] board)
     {
@@ -523,6 +538,11 @@ public  class Fanorona
         return numberOfStones;
     }
 
+    /**
+     * CheckForPossibleMoves returns an ArrayList<Move> containing all allowed moves (also attacks) within the boards boundaries
+     * Depending on the possible movement directions (up, upleft,...) of the respective position, it checks if there is a
+     * stone on the next position. If not, the move is added to the ArrayList
+     */
     private static  ArrayList<Move> CheckForPossibleMoves(int state,FieldPosition[][] board) //state: which team; 1 = white, 2 = black
     {
         //possibleMoves.clear();
@@ -748,6 +768,13 @@ public  class Fanorona
             return returnAttack;
         }
 
+    /** InitializeField creates the playing field within the boardArray which is
+     * 5x9 array with objects of the FieldPosition class.
+     * It sets the black and white stones according to the starting position
+     * and it also sets the possible movement options (up, upleft, left ,...)
+     * depending on the respective position.
+     */
+
     private static void InitializeField()
     {
         for(int row=0;row<5;row++)
@@ -828,7 +855,6 @@ public  class Fanorona
         }
     }
 
-
     /** minimax initiates the mini-max algorithm to determine the best Attack, which is then returned
      *minimax requires the current player(state), the board state(board), and the possible current attacks
      * creates an arraylist filled with all possible attacks and loops through all to find the best
@@ -858,9 +884,9 @@ public  class Fanorona
                 TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
                 if (checkAttack.size()==0){
                     state = (state==1) ? 2:1;
-                    value = minMove(state, nextBoard, 40, alpha, beta,checkAttack);
+                    value = minMove(state, nextBoard, 10, alpha, beta,checkAttack);
                 }else {
-                    value = maxMove(state, nextBoard, 40, alpha, beta,checkAttack);
+                    value = maxMove(state, nextBoard, 10, alpha, beta,checkAttack);
                 }
 
 
@@ -883,7 +909,7 @@ public  class Fanorona
 
                 nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);
                 state = (state==1) ? 2:1;
-                value = minMove(state, nextBoard, 40, alpha, beta,checkAttack);
+                value = minMove(state, nextBoard, 10, alpha, beta,checkAttack);
 
                 if (value > alpha) {
                     alpha = value;

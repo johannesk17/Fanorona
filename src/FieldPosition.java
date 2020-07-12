@@ -1,3 +1,9 @@
+/**
+ * FieldPosition represents one stone position of the playing field
+ * The variables store the stone which is on this position and the possible movement
+ * directions (up, upleft,...)
+ */
+
 public class FieldPosition
 {
     private int stone; //0 = no stone, 1 = white, 2 = black
@@ -109,6 +115,9 @@ public class FieldPosition
         this.upLeft = upLeft;
     }
 
+    /**
+     returns a deep copied new object of FieldPosition with the same data
+     */
     public FieldPosition DeepCopy()
     {
         FieldPosition copiedObject = new FieldPosition(this.stone, this.up, this.upRight, this.right, this.downRight, this.down, this.downLeft, this.left, this.upLeft);

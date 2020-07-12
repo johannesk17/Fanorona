@@ -1,5 +1,9 @@
 import java.util.Objects;
 
+/**
+ * Move represents one possible move storing the moving stone (row and column) and the direction
+ */
+
 public class Move
 {
     int row;

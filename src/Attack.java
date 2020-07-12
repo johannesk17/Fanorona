@@ -1,5 +1,10 @@
 import java.util.Objects;
 
+/**
+ * Attack represents one possible attack move storing the attacking stone (row and column), the direction
+ * of the attack and the attack type
+ */
+
 public class Attack {
     int row;
     int column;
