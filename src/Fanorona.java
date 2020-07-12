@@ -817,9 +817,9 @@ public  class Fanorona
                 TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
                 if (checkAttack.size()==0){
                     state = (state==1) ? 2:1;
-                    value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                    value = minMove(state, nextBoard, 16, alpha, beta,checkAttack);
                 }else {
-                    value = maxMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                    value = maxMove(state, nextBoard, 16, alpha, beta,checkAttack);
                 }
 
 
@@ -844,7 +844,7 @@ public  class Fanorona
 
                 nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);  //todo enable boardchange based on move
                 state = (state==1) ? 2:1;
-                value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                value = minMove(state, nextBoard, 16, alpha, beta,checkAttack);
 
                 if (value > alpha) {
                     alpha = value;
@@ -887,9 +887,9 @@ public  class Fanorona
 
             if (checkAttack.size()==0){
                 state = (state==1) ? 2:1;
-                value = maxMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                value = maxMove(state, nextBoard, depth-1, alpha, beta,checkAttack);
             }else {
-                value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                value = minMove(state, nextBoard, depth-1, alpha, beta,checkAttack);
             }
 
 
@@ -933,9 +933,9 @@ public  class Fanorona
 
             if (checkAttack.size()==0){
                 state = (state==1) ? 2:1;
-                value = maxMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                value = maxMove(state, nextBoard, depth-1, alpha, beta,checkAttack);
             }else {
-                value = minMove(state, nextBoard, 5, alpha, beta,checkAttack);
+                value = minMove(state, nextBoard, depth-1, alpha, beta,checkAttack);
             }
 
             if (value > alpha) {
