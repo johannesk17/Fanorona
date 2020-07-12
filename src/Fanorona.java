@@ -92,7 +92,7 @@ public  class Fanorona
             FieldPosition[][] cloneBoard= copyArray(boardArray);
 
 
-            Attack BestMove = minimax(counter,cloneBoard,possibleAttack); //TODO
+            Attack BestMove = minimax(counter,cloneBoard,possibleAttack);
             int[]BestMoveConv = convertToAttack(BestMove);
             System.out.printf("Best Move: Row- %d  Column- %d newRow- %d NewColumn- %d MoveType- %d Dir- %d",BestMoveConv[0],BestMoveConv[1],BestMoveConv[2],BestMoveConv[3],BestMoveConv[4],BestMoveConv[5]);
             System.out.println("");
@@ -560,6 +560,13 @@ public  class Fanorona
         }
         return returnMove;
     }
+    /**
+     * CheckForPossibleAttacks returns an ArrayList<Attack> containing all allowed Attack moves withing the boards boundaries, following the provides rules
+     * for (Move m: availableMoves) checks the ability of provided moves to attack an oponents stone by looping through each move
+     * each component in the Loop covers 1 of the possible 8 directions a piece may move
+     * both possible moveType 0/1 forward and reverse attack are tested as well
+     * if a move is excepted a new entry is added to  returnAttack, which contains: row,colums,direction and moveType
+     */
     private static ArrayList<Attack> CheckForPossibleAttacks(int state,FieldPosition[][] board,ArrayList<Move> availableMoves) //state: which team; 1 = white, 2 = black
     {
             //possibleAttack.clear();
@@ -811,9 +818,14 @@ public  class Fanorona
         }
     }
 
-    //TODO AI functions ->
 
-
+    /** minimax initiates the mini-max algorithm to determine the best Attack, which is then returned
+     *minimax requires the current player(state), the board state(board), and the possible current attacks
+     * creates an arraylist filled with all possible attacks and loops through all to find the best
+     * if after the attack a further attack is possible maxMove is executed / since the players turn continues
+     * if no further move is possible minMove is executed, with inverted state / changed player
+     * if (checkAttack.size()==0) minMove gets executed with a move instead of an attack
+     */
     static public Attack minimax (int state,FieldPosition[][] board,ArrayList<Attack> globalAttack){
         FieldPosition[][] nextBoard= copyArray(board);
         int value, alpha = Integer.MIN_VALUE, beta =Integer.MAX_VALUE;
@@ -829,16 +841,16 @@ public  class Fanorona
             for (Attack possibleMove : checkAttack) {
 
 
-                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);  //todo enable boardchange based on move
+                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);
 
                 checkMoves=CheckForPossibleMoves(state,nextBoard);
                 checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
                 TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
                 if (checkAttack.size()==0){
                     state = (state==1) ? 2:1;
-                    value = minMove(state, nextBoard, 16, alpha, beta,checkAttack);
+                    value = minMove(state, nextBoard, 40, alpha, beta,checkAttack);
                 }else {
-                    value = maxMove(state, nextBoard, 16, alpha, beta,checkAttack);
+                    value = maxMove(state, nextBoard, 40, alpha, beta,checkAttack);
                 }
 
 
@@ -859,9 +871,9 @@ public  class Fanorona
             bestMove = possibleConvertedMoves.get(0);
             for (Attack possibleMove : possibleConvertedMoves){
 
-                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);  //todo enable boardchange based on move
+                nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);
                 state = (state==1) ? 2:1;
-                value = minMove(state, nextBoard, 16, alpha, beta,checkAttack);
+                value = minMove(state, nextBoard, 40, alpha, beta,checkAttack);
 
                 if (value > alpha) {
                     alpha = value;
@@ -875,7 +887,11 @@ public  class Fanorona
 
         return bestMove;
     }
-
+    /**
+     * minMove calculated the worst move the opponent may make in reaction to a players move,
+     * requires  alpha / and beta variables to keep track of best / worst move value
+     * if contiued attack is possible calls itself again with same state/ same player
+     */
     static public int minMove (int state, FieldPosition[][] board, int depth, int alpha, int beta,ArrayList<Attack>checkPrevAttack){
 
         if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
@@ -897,7 +913,7 @@ public  class Fanorona
         for (Attack possibleMove: checkAttack){
 
 
-            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
+            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);
             checkMoves=CheckForPossibleMoves(state,nextBoard);
             checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
             TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
@@ -921,7 +937,11 @@ public  class Fanorona
         }
         return beta;
     }
-
+    /**
+     *  maxMove calculated the Best move the player can  make in reaction to the opponents move,
+     *  requires  alpha / and beta variables to keep track of best / worst move value
+     *  if contiued attack is possible calls itself again with same state/ same player
+     */
     static public int maxMove (int state, FieldPosition[][] board, int depth, int alpha, int beta,ArrayList<Attack>checkPrevAttack){
 
         if (winCondition(board)==0 || winCondition(board)==1 || depth <= 0 ){
@@ -943,7 +963,7 @@ public  class Fanorona
         for (Attack possibleMove: checkAttack){
 
 
-            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);   //todo enable boardchange based on move
+            nextBoard = ChangeStateNotes(convertToAttack(possibleMove),nextBoard);
             checkMoves=CheckForPossibleMoves(state,nextBoard);
             checkAttack=CheckForPossibleAttacks(state,nextBoard,checkMoves);
             TrimToNodeActions(checkAttack,convertToAttack(possibleMove));
@@ -964,7 +984,12 @@ public  class Fanorona
         }
         return alpha;
     }
-
+    /**
+     *  evaluateBoard retures a value based on the board state,
+     *  based on number of stones
+     *  player stones equal positiv value
+     *  opponent stones equal negativ value
+     */
     static int evaluateBoard(FieldPosition[][] board){
         int value = 0;
 
@@ -976,7 +1001,9 @@ public  class Fanorona
         }
         return value;
     }
-
+    /**
+     *  convertToAttack adds newRow and newColums to Attack and converts it to a int[]
+     */
     static int[] convertToAttack(Attack attack){
         int[] newAttack = new int[6];
         int newRow,newColumn;
@@ -1027,14 +1054,14 @@ public  class Fanorona
 
         return newAttack;
     }
-
+    /**
+     *copyArray duplicates an Array and allows for the algorith to calculate future board states without changing the original
+     */
     static FieldPosition[][] copyArray(FieldPosition[][] input) {
         if (input == null){
             return null;
         }
-
         FieldPosition[][] result = new FieldPosition[input.length][input[0].length];
-
         try
         {
             for (int r = 0; r < input.length; r++)
